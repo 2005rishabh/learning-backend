@@ -14,6 +14,11 @@ app.get('/', (req,res) => {
     res.render('index');
 });
 
+app.get('/', (req,res) => {
+    console.log('Received a GET request');
+    res.render('index');
+});
+
 app.get('/public/:username', (req,res) => {
     const username = req.params.username;
     console.log(`Received request for username: ${username}`);
