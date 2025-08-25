@@ -9,6 +9,28 @@
   <body>
     <div class="main text-white w-full min-h-screen bg-zinc-900">
       <a class="mb-10" href="/">Go Back to Home</a>
+      <div class="form flex flex-col gap-4 p-4">
+        <form action="/edit" method="post" class="flex flex-col gap-4">
+          <input
+            class="block px-2 py-2 w-1/4 bg-zinc-800"
+            type="text"
+            placeholder="Previous name of file"
+            name="previous"
+            value = "<%= filename %>"
+          />
+          <input
+            class="block px-2 py-2 w-1/4 bg-zinc-800"
+            type="text"
+            placeholder="Type new file name here"
+            name="new"
+          />
+          <input
+            class="bg-blue-400 rounded w-72"
+            type="submit"
+            value="Update Name"
+          />
+        </form>
+      </div>
     </div> 
   </body>
 </html>
