@@ -19,9 +19,22 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.get("/profile", isLog, (req, res) => {
-  console.log(req.user);
-  res.render("login");
+app.get("/profile", isLog, async (req, res) => {
+  let user = await userModel.findOne({ email: req.user.email }).populate("posts");
+  console.log(user);
+  res.render("profile", { user });
+});
+
+app.post("/post", isLog, async (req, res) => {
+  let user = await userModel.findOne({ email: req.user.email });
+  let post = await postModel.create({
+    user: user._id,
+    content: req.body.content,
+    likes: [],
+  })
+  user.posts.push(post._id);
+  await user.save();
+  res.redirect("/profile");
 });
 
 app.post("/register", async (req, res) => {
@@ -64,7 +77,7 @@ app.post("/login", async (req, res) => {
     if (result) {
       let token = jwt.sign({ email: email, userid: user._id }, "sgghh");
       res.cookie("token", token);
-      return res.send("You can login");
+      res.redirect("/profile");
     } else return res.redirect("/login");
   });
 });
@@ -77,7 +90,7 @@ app.get("/logout", (req, res) => {
 function isLog(req, res, next) {
   let token = req.cookies.token;
 
-  if (!token) return res.send("You are not logged in");
+  if (!token) return res.redirect("/login");
 
   jwt.verify(token, "sgghh", (err, decoded) => {
     if (err) return res.send("Invalid token");
