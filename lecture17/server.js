@@ -1,13 +1,26 @@
 const exp = require("express");
 const app = exp();
 const cookieParser = require("cookie-parser");
-const mongoose = require("mongoose");
 const userModel = require("./models/user");
 const postModel = require("./models/post");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 
-mongoose.connect("mongodb://127.0.0.1:27017/socialApp");
+// Configure storage location and filename
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads"); // make sure this folder exists
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + uniqueSuffix);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 
 app.set("view engine", "ejs");
 app.use(exp.json());
@@ -18,6 +31,15 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.render("index");
 });
+
+app.get("/test", (req, res) => {
+  res.render("test");
+});
+
+app.post("/upload", (req, res) => {
+  console.log(req.file);
+});
+
 
 app.get("/login", (req, res) => {
   res.render("login");
